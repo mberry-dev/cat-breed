@@ -1,0 +1,56 @@
+name: Android build
+
+# Builds the Android app on GitHub's servers, so the Gradle setup is checked without anyone
+# needing Android Studio. It also proves the API key lookup works from every source.
+# The key values below are made-up test strings, not real keys.
+on:
+  push:
+    branches: [main]
+    paths: ['CatBreedsApp/**', '.github/workflows/android.yml']
+  pull_request:
+    paths: ['CatBreedsApp/**', '.github/workflows/android.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: CatBreedsApp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: chmod +x gradlew
+
+      - name: Build with no key (must still build, and warn)
+        run: |
+          ./gradlew assembleDebug --no-daemon 2>&1 | tee build.log
+          grep -q "CAT_API_KEY is not set" build.log
+
+      - name: Build with the key in an environment variable
+        env:
+          CAT_API_KEY: key-from-environment
+        run: |
+          ./gradlew assembleDebug --no-daemon
+          grep -q 'CAT_API_KEY = "key-from-environment"' app/build/generated/source/buildConfig/debug/com/example/catbreedsapp/BuildConfig.java
+
+      - name: Build with the key in local.properties
+        run: |
+          echo "CAT_API_KEY=key-from-local-file" > local.properties
+          ./gradlew assembleDebug --no-daemon
+          grep -q 'CAT_API_KEY = "key-from-local-file"' app/build/generated/source/buildConfig/debug/com/example/catbreedsapp/BuildConfig.java
+
+      - name: Unit tests (breed parsing and formatting)
+        run: ./gradlew testDebugUnitTest --no-daemon
+
+      - name: The committed code must not contain a real key
+        run: |
+          if grep -rEn "live_[A-Za-z0-9]{30,}|CAT_API_KEY=[A-Za-z0-9_]{30,}" --include=*.properties --include=*.kts --include=*.kt --include=*.js --include=*.json --include=*.yml --include=*.md .. ; then
+            echo "A real-looking key is committed"; exit 1
+          fi
