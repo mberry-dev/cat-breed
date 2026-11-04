@@ -18,6 +18,8 @@ Built for CIS 436 (Mobile Application Development) at the University of Michigan
 
 The two versions are built to behave the same: the same layout and colors, the same wording, the same "Unknown" for missing facts, and the same first breed shown on start.
 
+Some breeds have no photo in The Cat API (41 of its 107 breeds when I checked, such as Domestic Shorthair and Thai). Both versions show "No image available" for those, along with the breed's details.
+
 **Why the web version works differently:** a web page's code is public, so an API key placed in it would be visible to everyone. The Cat API's breed list needs a key, so the web version never calls it from the browser. Instead, when the site is published, GitHub fetches the list once using the key stored as a repository secret, and publishes it as a plain data file next to the page. The photo lookup needs no key, so the page calls that directly.
 
 ## Web version
