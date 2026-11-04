@@ -61,7 +61,8 @@ async function main() {
       const breeds = normalizeBreeds(await response.json());
       check('breed list has plenty of breeds', breeds.length >= 30, `${breeds.length} breeds`);
       check('every breed has a name and an id', breeds.every((b) => b.id && b.name));
-      check('most breeds have a photo id', breeds.filter((b) => b.referenceImageId).length >= breeds.length * 0.8);
+      // The API really has no photo for some breeds (41 of 107 when this was written), so only a rough floor is checked
+      check('about half the breeds or more have a photo id', breeds.filter((b) => b.referenceImageId).length >= breeds.length * 0.5);
     } catch (error) {
       check('breed list reachable', false, error.message);
     }
