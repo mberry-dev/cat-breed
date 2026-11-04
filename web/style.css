@@ -1,0 +1,112 @@
+/* Matches the Android app: a purple header band with a white dropdown, a plain page below it, bold labels.
+   Colors are tokens; dark mode (like the Android theme) only changes their values. */
+:root {
+  --header: #512da8;
+  --page: #ffffff;
+  --text: #1c1b1f;
+  --muted: #5f5f66;   /* the Android placeholder grey (#888) is a little too light to read comfortably */
+  --focus: #ffffff;
+  --focus-page: #512da8;
+  --side: max(1rem, calc((100% - 40rem) / 2));
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #1c1b1f;
+    --text: #e6e1e5;
+    --muted: #b0acb5;
+    --focus-page: #d0bcff;
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: Roboto, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  line-height: 1.4;
+}
+
+.page { min-height: 100vh; }
+
+/* ── Header band ───────────────────────────────────────────────────────────── */
+
+.top { background: var(--header); padding: 1rem var(--side); }
+.title { margin: 0 0 0.6rem; color: #fff; font-size: 1.5rem; font-weight: 700; text-align: center; }
+
+.breed-select {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem;
+  font: inherit;
+  font-size: 1rem;
+  color: #1c1b1f;
+  background: #fff;
+  border: 0;
+  border-radius: 0;
+}
+
+.status { margin: 0.5rem 0 0; color: #fff; }
+.status[hidden], .retry-button[hidden], .placeholder[hidden], .breed[hidden], .cat-image[hidden] { display: none; }
+
+.retry-button {
+  margin-top: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--header);
+  background: #fff;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 3px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Body ──────────────────────────────────────────────────────────────────── */
+
+.content { padding: 1rem var(--side) 0.5rem; }
+
+.placeholder { margin: 2rem 0 0; text-align: center; font-size: 1.125rem; color: var(--muted); }
+
+.cat-image {
+  display: block;
+  width: 100%;
+  height: 220px;
+  margin: 0 0 1rem;
+  object-fit: contain;
+}
+
+.breed-name { margin: 0 0 0.75rem; font-size: 1.75rem; font-weight: 700; }
+.row { margin: 0 0 0.6rem; font-size: 1.125rem; }
+.row-label { font-weight: 700; }
+.block-label { margin: 0 0 0.25rem; font-size: 1.125rem; }
+.body-text { margin: 0 0 0.75rem; font-size: 1.0625rem; line-height: 1.6; }
+
+:focus-visible { outline: 3px solid var(--focus-page); outline-offset: 2px; }
+.top :focus-visible { outline-color: var(--focus); }
+
+.credits { padding: 1rem var(--side) 2rem; text-align: center; font-size: 0.85rem; color: var(--muted); }
+.credits p { margin: 0 0 0.4rem; }
+.credits a { color: var(--focus-page); }
+.notice { text-align: center; padding: 1rem; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

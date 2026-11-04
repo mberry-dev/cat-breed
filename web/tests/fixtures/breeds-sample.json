@@ -1,0 +1,9 @@
+[
+  {"id":"sibe","name":"Siberian","origin":"Russia","temperament":"Curious, Intelligent, Loyal","life_span":"12 - 15",
+   "weight":{"imperial":"8 - 16","metric":"3 - 7"},"description":"Strong and smart.","reference_image_id":"3bkZAjRh1"},
+  {"id":"abys","name":"Abyssinian","origin":"Egypt","temperament":"Active, Energetic, Gentle","life_span":"14 - 15",
+   "weight":{"imperial":"7  -  10","metric":"3 - 5"},"description":"Loves to climb.","reference_image_id":"0XYvRd7oD"},
+  {"id":"mcoo","name":"Maine Coon","origin":"United States","temperament":"Adaptable, Gentle","life_span":"12 - 15",
+   "weight":{"imperial":"9 - 18","metric":"4 - 8"},"description":"A big, friendly cat.","reference_image_id":"OOD3VXAQn"},
+  {"id":"nowt","name":"Mystery Cat","origin":null,"life_span":"10 - 12","description":"Little is known."}
+]
