@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 
-// Bottom fragment — displays cat image and breed information
+// Bottom fragment — displays the cat photo and breed information
 class BottomFragment : Fragment() {
 
     private val viewModel: CatViewModel by activityViewModels()
@@ -23,6 +23,9 @@ class BottomFragment : Fragment() {
     private lateinit var lifeSpanText: TextView
     private lateinit var weightText: TextView
     private lateinit var placeholderText: TextView
+
+    // The photo currently shown, so the same photo isn't reloaded every time something else changes
+    private var shownUrl: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,45 +49,56 @@ class BottomFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Show placeholder until a breed is selected
-        placeholderText.visibility = View.VISIBLE
-        catImage.visibility = View.GONE
-
-        // Observe selected breed and update UI
-        viewModel.selectedBreed.observe(viewLifecycleOwner) { breed ->
-            if (breed != null) {
-                placeholderText.visibility = View.GONE
-                showBreedInfo(breed)
-            }
-        }
-
-        // Observe image URL and load with Glide
-        viewModel.imageUrl.observe(viewLifecycleOwner) { url ->
-            if (!url.isNullOrEmpty()) {
-                Glide.with(this)
-                    .load(url)
-                    .placeholder(android.R.drawable.ic_menu_gallery)
-                    .error(android.R.drawable.ic_menu_close_clear_cancel)
-                    .into(catImage)
-                catImage.visibility    = View.VISIBLE
-                placeholderText.visibility = View.GONE
-            } else {
-                catImage.visibility        = View.GONE
-                placeholderText.visibility = View.VISIBLE
-                placeholderText.text       = "No image available"
-            }
-        }
+        viewModel.selectedBreed.observe(viewLifecycleOwner) { render() }
+        viewModel.imageUrl.observe(viewLifecycleOwner) { render() }
+        viewModel.isImageLoading.observe(viewLifecycleOwner) { render() }
     }
 
-    // Populate all text views with breed data
-    private fun showBreedInfo(breed: CatBreed) {
-        placeholderText.visibility = View.GONE
+    // Draws the screen from the current state: nothing picked yet, or a breed with its photo (or why there is none)
+    private fun render() {
+        val breed = viewModel.selectedBreed.value
+        val url = viewModel.imageUrl.value
+        val loadingImage = viewModel.isImageLoading.value == true
+
+        if (breed == null) {
+            placeholderText.text = "Select a breed to see information"
+            placeholderText.visibility = View.VISIBLE
+            catImage.visibility = View.GONE
+            return
+        }
 
         nameText.text        = breed.name
-        originText.text      = breed.origin
-        temperamentText.text = breed.temperament
-        descriptionText.text = breed.description
-        lifeSpanText.text    = "${breed.lifeSpan} years"
-        weightText.text      = "${breed.weight} kg"
+        originText.text      = CatFormat.orUnknown(breed.origin)
+        lifeSpanText.text    = CatFormat.lifeSpan(breed.lifeSpan)
+        weightText.text      = CatFormat.weight(breed.weight)
+        temperamentText.text = CatFormat.orUnknown(breed.temperament)
+        descriptionText.text = CatFormat.orUnknown(breed.description)
+
+        when {
+            !url.isNullOrEmpty() -> {
+                if (url != shownUrl) {
+                    Glide.with(this)
+                        .load(url)
+                        .placeholder(android.R.drawable.ic_menu_gallery)
+                        .error(android.R.drawable.ic_menu_close_clear_cancel)
+                        .into(catImage)
+                    shownUrl = url
+                }
+                catImage.visibility = View.VISIBLE
+                placeholderText.visibility = View.GONE
+            }
+            loadingImage -> {
+                shownUrl = null
+                catImage.visibility = View.GONE
+                placeholderText.text = "Loading image..."
+                placeholderText.visibility = View.VISIBLE
+            }
+            else -> {
+                shownUrl = null
+                catImage.visibility = View.GONE
+                placeholderText.text = "No image available"
+                placeholderText.visibility = View.VISIBLE
+            }
+        }
     }
 }

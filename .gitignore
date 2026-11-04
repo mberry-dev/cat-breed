@@ -1,0 +1,10 @@
+node_modules/
+_site/
+.DS_Store
+desktop.ini
+
+# Secrets: never commit API keys or signing keys
+local.properties
+.env
+*.jks
+*.keystore
