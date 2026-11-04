@@ -1,8 +1,5 @@
 # Cat Breeds
 
-[![Web version](https://github.com/mberry-dev/cat-breed/actions/workflows/web.yml/badge.svg)](https://github.com/mberry-dev/cat-breed/actions/workflows/web.yml)
-[![Android build](https://github.com/mberry-dev/cat-breed/actions/workflows/android.yml/badge.svg)](https://github.com/mberry-dev/cat-breed/actions/workflows/android.yml)
-
 Browse cat breeds: pick one from a dropdown to see its photo, origin, life span, weight, temperament and a description. Built twice: as an **Android app** (Kotlin) and as a **web version** (JavaScript) you can use right in the browser. Breed data and photos come from [The Cat API](https://thecatapi.com).
 
 **Try it:** https://mberry-dev.github.io/cat-breed/
@@ -38,6 +35,7 @@ You need [Node.js](https://nodejs.org) 20 or newer and a free API key from [thec
 1. Put your key where the script can find it, in either of these places (neither is committed to Git):
    - the file `CatBreedsApp/local.properties`, as the line `CAT_API_KEY=your_key_here` (the same line the Android app uses), or
    - an environment variable named `CAT_API_KEY`
+     (in Git Bash: `read -s -p "Cat API key: " CAT_API_KEY && export CAT_API_KEY`, then run the commands below in the same window)
 2. Run:
 
 ```bash
@@ -116,13 +114,13 @@ Without a key the app still opens, but the breed list shows "Invalid API key" wi
 
 ### Testing
 
-Every change that touches the Android code is also built on GitHub (the **Android build** badge above). That check confirms the project builds with no key, with a key in `local.properties`, and with a key in an environment variable, runs the unit tests, and checks that no key is committed to the repo.
+Every change that touches the Android code is also built on GitHub. That check confirms the project builds with no key, with a key in `local.properties`, and with a key in an environment variable, runs the unit tests, and checks that no key is committed to the repo.
 
 The breed parsing and display rules have unit tests (`CatParserTest`, `CatFormatTest`). Run them with:
 
 ```bash
 cd CatBreedsApp
-./gradlew testDebugUnitTest      # on Windows: gradlew.bat testDebugUnitTest
+./gradlew testDebugUnitTest      # Git Bash: as shown. PowerShell: .\gradlew.bat testDebugUnitTest
 ```
 
 I also tested the app on three Pixel emulator profiles (Pixel 2, Pixel 4 and Pixel 7) with a written test plan: [`CatBreedsApp/CatBreedsApp_TestPlan.xlsx`](CatBreedsApp/CatBreedsApp_TestPlan.xlsx). It has 32 test cases over three days (startup and UI, the API and breeds, and orientation handling), and each one was run on all three devices. The plan was written for the original course version of the app, before the later clean-up.
