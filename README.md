@@ -70,13 +70,6 @@ A separate **live check** calls the real Cat API and confirms it still answers t
 npm run check:api
 ```
 
-### Publishing (for the repository owner)
-
-The site is published by GitHub Actions. Two one-time settings are needed in the repository:
-
-1. **Settings > Pages > Source:** GitHub Actions
-2. **Settings > Secrets and variables > Actions > New repository secret:** name `CAT_API_KEY`, value your Cat API key
-
 ### Credits
 
 Breed data and photos from [The Cat API](https://thecatapi.com/).
